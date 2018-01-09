@@ -12,6 +12,7 @@ namespace ExcelRW
     /// </summary>
     public interface IExcelModel
     {
+        //SortedList<int, string> ColTitle { get; set; }
         /// <summary>
         /// 依据IRow创建实例
         /// </summary>
@@ -30,5 +31,21 @@ namespace ExcelRW
         /// <returns></returns>
         //Error
         IRow GetHeadRow();
+    }
+    public class ExcelModelFactroy
+    {
+        public static IExcelModel createModel(IRow row,string typeName)
+        {
+            IExcelModel m;
+            if (Type.GetType(typeName).IsClass)
+            {
+                m = Activator.CreateInstance(Type.GetType(typeName)) as IExcelModel;
+                return m.Create(row);
+            }
+            else
+            {
+                throw new Exception();
+            }   
+        }
     }
 }

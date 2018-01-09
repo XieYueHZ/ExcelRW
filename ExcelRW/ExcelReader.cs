@@ -163,13 +163,17 @@ namespace ExcelRW
             return isDate;
         }
 
-        public static List<IExcelModel> SheetToList(ISheet sheet,bool hasTitle)
+        public static List<IExcelModel> SheetToList(ISheet sheet,bool hasTitle=false)
         {
+           
             List<IExcelModel> list = new List<IExcelModel>();
+           
             int startNum = hasTitle ? 1 : 0;
+            int count = sheet.GetRow(0).LastCellNum;
             for (int i = startNum; i < sheet.LastRowNum+1; i++)
             {
                 //TODO
+                IRow r = sheet.GetRow(i);
             }
             return list;
         }

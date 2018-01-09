@@ -8,8 +8,21 @@ using System.Data;
 
 namespace ExcelRW
 {
+    /// <summary>
+    /// ExcelReadr
+    /// 使用NPOI读取Excel的辅助类
+    /// </summary>
     public class ExcelReader
     {
+        /// <summary>
+        /// 将Isheet读入DataTable
+        /// </summary>
+        /// <param name="sheet">需要读取的sheet</param>
+        /// <param name="skipBlankRow">是否跳过空行</param>
+        /// <param name="headRowNum">标题行号，默认将第一行作为标题行</param>
+        /// <param name="startRowNum">开始导入行号</param>
+        /// <returns></returns>
+        //TODO：添加是否设置DataTable列标题
         public static DataTable SheetToDataTable(ISheet sheet, bool skipBlankRow=false, int headRowNum=0, int startRowNum=0)
         {
             if (headRowNum >= 0 && headRowNum <= sheet.LastRowNum && startRowNum <= sheet.LastRowNum)
@@ -50,7 +63,12 @@ namespace ExcelRW
                 throw new ArgumentException("行数越界");
             }
         }
-
+        /// <summary>
+        /// 设置DataTable列标题
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <param name="headRow"></param>
+        /// <param name="dtColCount"></param>
         private static void SetDTHead(DataTable dt, IRow headRow, int dtColCount)
         {
             for (int i = 0; i < dtColCount; i++)
@@ -59,7 +77,11 @@ namespace ExcelRW
                 dt.Columns.Add(colName);
             }
         }
-
+        /// <summary>
+        /// 将Excel单元格转换为String
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <returns></returns>
         private static string CellValueToString(ICell cell)
         {
             string cellString = String.Empty;
@@ -93,7 +115,11 @@ namespace ExcelRW
             }
             return cellString;
         }
-
+        /// <summary>
+        /// 将数值类型单元格转换为String
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <returns></returns>
         private static string numericCellToString(ICell cell)
         {
             string numString = String.Empty;
@@ -114,7 +140,12 @@ namespace ExcelRW
             }
             return numString;
         }
-
+        /// <summary>
+        /// 判断单元格是否为日期格式
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <returns></returns>
+        //部分自定义格式日期使用DateUtil.IsCellDateFormatted(Icell cell)判断时会出现错误
         public static bool IsDateCell(ICell cell)
         {
             bool isDate = false;

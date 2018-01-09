@@ -23,7 +23,7 @@ namespace ExcelRW
         /// <param name="startRowNum">开始导入行号</param>
         /// <returns></returns>
         //TODO：添加是否设置DataTable列标题
-        public static DataTable SheetToDataTable(ISheet sheet, bool skipBlankRow=false, int headRowNum=0, int startRowNum=0)
+        public static DataTable SheetToDataTable(ISheet sheet, bool skipBlankRow = false, int headRowNum = 0, int startRowNum = 0)
         {
             if (headRowNum >= 0 && headRowNum <= sheet.LastRowNum && startRowNum <= sheet.LastRowNum)
             {
@@ -97,7 +97,7 @@ namespace ExcelRW
                         cellString = cell.StringCellValue;
                         break;
                     case CellType.Formula:
-                        IFormulaEvaluator e = WorkbookFactory.CreateFormulaEvaluator(WB);
+                        IFormulaEvaluator e = WorkbookFactory.CreateFormulaEvaluator(cell.Sheet.Workbook);
                         ICell formulaCell = e.EvaluateInCell(cell);
                         cellString = CellValueToString(formulaCell);
                         break;
@@ -123,7 +123,7 @@ namespace ExcelRW
         private static string numericCellToString(ICell cell)
         {
             string numString = String.Empty;
-            if (cell.CellType==CellType.Numeric)
+            if (cell.CellType == CellType.Numeric)
             {
                 if (IsDateCell(cell))
                 {
@@ -159,8 +159,19 @@ namespace ExcelRW
                     isDate = !cellFormatString.Contains("General") && cellFormatString.Contains("DBNum");
                 }
             }
-            
+
             return isDate;
+        }
+
+        public static List<IExcelModel> SheetToList(ISheet sheet,bool hasTitle)
+        {
+            List<IExcelModel> list = new List<IExcelModel>();
+            int startNum = hasTitle ? 1 : 0;
+            for (int i = startNum; i < sheet.LastRowNum+1; i++)
+            {
+                //TODO
+            }
+            return list;
         }
     }
 }

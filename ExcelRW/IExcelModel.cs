@@ -8,15 +8,16 @@ using System.Threading.Tasks;
 namespace ExcelRW
 {
     /// <summary>
-    /// Model与Excel转换借口
+    /// Model与Excel转换
     /// </summary>
-    interface IExcelModel
+    public interface IExcelModel
     {
         /// <summary>
         /// 依据IRow创建实例
         /// </summary>
         /// <param name="row"></param>
         /// <returns></returns>
+        //Error
         IExcelModel Create(IRow row);
         /// <summary>
         /// 将实例转换为IRow
@@ -27,6 +28,7 @@ namespace ExcelRW
         /// 创建标题行
         /// </summary>
         /// <returns></returns>
+        //Error
         IRow GetHeadRow();
     }
 }

@@ -9,6 +9,7 @@ namespace ExcelRW
 {
     /// <summary>
     /// Model与Excel转换
+    /// 取消接口，使用委托实现模型类与Excel转换
     /// </summary>
     public interface IExcelModel
     {
@@ -18,8 +19,8 @@ namespace ExcelRW
         /// </summary>
         /// <param name="row"></param>
         /// <returns></returns>
-        //Error
-        IExcelModel Create(IRow row);
+        //Error(使用委托)
+        //IExcelModel CreateFromRow(IRow row);
         /// <summary>
         /// 将实例转换为IRow
         /// </summary>
@@ -31,21 +32,5 @@ namespace ExcelRW
         /// <returns></returns>
         //Error
         IRow GetHeadRow();
-    }
-    public class ExcelModelFactroy
-    {
-        public static IExcelModel createModel(IRow row,string typeName)
-        {
-            IExcelModel m;
-            if (Type.GetType(typeName).IsClass)
-            {
-                m = Activator.CreateInstance(Type.GetType(typeName)) as IExcelModel;
-                return m.Create(row);
-            }
-            else
-            {
-                throw new Exception();
-            }   
-        }
     }
 }

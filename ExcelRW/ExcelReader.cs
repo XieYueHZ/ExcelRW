@@ -82,7 +82,7 @@ namespace ExcelRW
         /// </summary>
         /// <param name="cell"></param>
         /// <returns></returns>
-        private static string CellValueToString(ICell cell)
+        public static string CellValueToString(ICell cell)
         {
             string cellString = String.Empty;
 
@@ -163,7 +163,9 @@ namespace ExcelRW
             return isDate;
         }
 
-        public static List<IExcelModel> SheetToList(ISheet sheet,bool hasTitle=false)
+        //delegate IExcelModel CreateModel(IRow row);
+
+        public static List<IExcelModel> SheetToList(ISheet sheet,bool hasTitle,Func<IRow,IExcelModel> CreateFromRow)
         {
            
             List<IExcelModel> list = new List<IExcelModel>();
@@ -174,6 +176,8 @@ namespace ExcelRW
             {
                 //TODO
                 IRow r = sheet.GetRow(i);
+                IExcelModel em = CreateFromRow(r);
+                list.Add(em);
             }
             return list;
         }

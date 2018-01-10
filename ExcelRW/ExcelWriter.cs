@@ -73,11 +73,14 @@ namespace ExcelRW
         }
 
         /// <summary>
-        /// 将List转换为ISheet，需要实现IExcelModel借口
+        /// 将List转换为ISheet
+        /// 在T中定义 IRow GetTitle(),IRow CreateRow(T)
         /// </summary>
         /// <param name="list"></param>
         /// <param name="sheet"></param>
         /// <param name="head">是否导入标题</param>
+        /// <param name="CreateRow"></param>
+        /// <param name="GetTitle"></param>
         public static void ListToSheet<T>(List<T> list,ISheet sheet,bool head,Func<IRow> GetTitle,Func<T,IRow> CreateRow)
         {
             int startNum = 0;

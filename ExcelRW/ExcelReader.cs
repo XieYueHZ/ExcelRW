@@ -162,7 +162,15 @@ namespace ExcelRW
 
             return isDate;
         }
-        
+        /// <summary>
+        /// 将Sheet转换为List
+        /// 在T中定义T CreateFromRow(IRow)
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sheet"></param>
+        /// <param name="hasTitle"></param>
+        /// <param name="CreateFromRow"></param>
+        /// <returns></returns>
         public static List<T> SheetToList<T>(ISheet sheet,bool hasTitle,Func<IRow,T> CreateFromRow)
         { 
             List<T> list = new List<T>();

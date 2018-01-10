@@ -162,21 +162,16 @@ namespace ExcelRW
 
             return isDate;
         }
-
-        //delegate IExcelModel CreateModel(IRow row);
-
-        public static List<IExcelModel> SheetToList(ISheet sheet,bool hasTitle,Func<IRow,IExcelModel> CreateFromRow)
-        {
-           
-            List<IExcelModel> list = new List<IExcelModel>();
-           
+        
+        public static List<T> SheetToList<T>(ISheet sheet,bool hasTitle,Func<IRow,T> CreateFromRow)
+        { 
+            List<T> list = new List<T>();
             int startNum = hasTitle ? 1 : 0;
             int count = sheet.GetRow(0).LastCellNum;
             for (int i = startNum; i < sheet.LastRowNum+1; i++)
             {
-                //TODO
                 IRow r = sheet.GetRow(i);
-                IExcelModel em = CreateFromRow(r);
+                T em = CreateFromRow(r);
                 list.Add(em);
             }
             return list;

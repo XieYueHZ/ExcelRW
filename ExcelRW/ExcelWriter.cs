@@ -71,25 +71,26 @@ namespace ExcelRW
                 }
             }
         }
+
         /// <summary>
         /// 将List转换为ISheet，需要实现IExcelModel借口
         /// </summary>
         /// <param name="list"></param>
         /// <param name="sheet"></param>
         /// <param name="head">是否导入标题</param>
-        public static void ListToSheet(List<IExcelModel> list,ISheet sheet,bool head)
+        public static void ListToSheet<T>(List<T> list,ISheet sheet,bool head,Func<IRow> GetTitle,Func<T,IRow> CreateRow)
         {
             int startNum = 0;
             if (head)
             {
                 IRow headRow = sheet.CreateRow(startNum);
-                headRow = list[0].GetHeadRow();
+                headRow = GetTitle();
                 startNum += 1;
             }
             foreach (var item in list)
             {
                 IRow r = sheet.CreateRow(startNum);
-                r = item.ToRow();
+                r = CreateRow(item);
             }
         }
     }

@@ -8,6 +8,8 @@ using System.Data;
 
 namespace ExcelRW
 {
+    //另一种委托写法
+    delegate IRow ModelToRow<T>(T t);
     /// <summary>
     /// NPOI写入Excel辅助类
     /// </summary>
@@ -96,5 +98,75 @@ namespace ExcelRW
                 r = CreateRow(item);
             }
         }
+        #region ListToSheet
+        /// <summary>
+        /// ListToSheet,在指定行号开始将List导入Sheet
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="sheet"></param>
+        /// <param name="CreatRow"></param>
+        /// <param name="startRowNum"></param>
+        private static void ListToSheet<T>(List<T> list,ISheet sheet,Func<T,IRow> CreatRow,int startRowNum)
+        {
+            foreach (var item in list)
+            {
+                IRow r = sheet.CreateRow(startRowNum);
+                r = CreatRow(item);
+                startRowNum += 1;
+            }
+        }
+        /// <summary>
+        /// ListToSheet,将List导入Sheet，从第一行开始，覆盖原始数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="sheet"></param>
+        /// <param name="CreateRow"></param>
+        public static void ListToSheet<T>(List<T> list,ISheet sheet,Func<T,IRow> CreateRow)
+        {
+            ListToSheet(list,sheet,CreateRow,0);
+        }
+        /// <summary>
+        /// ListToSheet,将List导入Sheet，添加到原始数据之后
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="sheet"></param>
+        /// <param name="CreateRow"></param>
+        public static void ListAppendToSheet<T>(List<T> list,ISheet sheet,Func<T,IRow> CreateRow)
+        {
+            int startNum = sheet.LastRowNum + 1;
+            ListToSheet(list, sheet, CreateRow, startNum);
+        }
+        /// <summary>
+        /// ListToSheet,将List导入Sheet，从第一行开始，覆盖原始数据,第一行为标题
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="sheet"></param>
+        /// <param name="GetTitle"></param>
+        /// <param name="CreateRow"></param>
+        public static void ListToSheetWithTitle<T>(List<T> list, ISheet sheet,Func<IRow> GetTitle, Func<T, IRow> CreateRow)
+        {
+            int startNum = 0;
+            IRow headRow = sheet.CreateRow(startNum);
+            headRow = GetTitle();
+            startNum += 1;
+            ListAppendToSheet(list, sheet, CreateRow);
+        }
+        #endregion
+        #region 另一种委托写法,需要测试
+        public static void ListToSheet<T>(List<T> list,ISheet sheet,ModelToRow<T> MtoRow)
+        {
+            int startNum = 0;
+            foreach (var item in list)
+            {
+                IRow r = sheet.CreateRow(startNum);
+                r = MtoRow(item);
+                startNum += 1;
+            }
+        }
+        #endregion
     }
 }

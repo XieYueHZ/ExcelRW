@@ -8,6 +8,7 @@ using System.Data;
 
 namespace ExcelRW
 {
+    public delegate T CreateFromRow<T>(IRow row);
     /// <summary>
     /// ExcelReadr
     /// 使用NPOI读取Excel的辅助类
@@ -180,6 +181,20 @@ namespace ExcelRW
             {
                 IRow r = sheet.GetRow(i);
                 T em = CreateFromRow(r);
+                list.Add(em);
+            }
+            return list;
+        }
+
+        
+        public static List<T> SheetToList<T>(ISheet sheet,CreateFromRow<T> Create)
+        {
+            List<T> list = new List<T>();
+            int startNum = 0;
+            for (int i = startNum; i < sheet.LastRowNum + 1; i++)
+            {
+                IRow r = sheet.GetRow(i);
+                T em = Create(r);
                 list.Add(em);
             }
             return list;

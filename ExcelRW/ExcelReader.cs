@@ -186,9 +186,8 @@ namespace ExcelRW
             }
             return list;
         }
-
-        
-        public static List<T> SheetToList<T>(ISheet sheet,CreateFromRow<T> Create)
+        //使用定义的委托
+        public static List<T> SheetToList<T>(ISheet sheet, CreateFromRow<T> Create)
         {
             List<T> list = new List<T>();
             int startNum = 0;
@@ -219,5 +218,8 @@ namespace ExcelRW
             }
             return instance;
         }
+
+        
+
     }
 }

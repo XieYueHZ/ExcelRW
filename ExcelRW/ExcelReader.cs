@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NPOI.SS.UserModel;
 using System.Data;
+using System.Reflection;
 
 namespace ExcelRW
 {
@@ -183,6 +184,25 @@ namespace ExcelRW
                 list.Add(em);
             }
             return list;
+        }
+
+        public static T RowToModel<T>(IRow row)
+        {
+            Type model = typeof(T);
+            T instance = (T)Activator.CreateInstance(model);
+            foreach (var mprop in model.GetProperties())
+            {
+                if (mprop.IsDefined(typeof(ColIndexAttribute)))
+                {
+                    //ColIndexAttribute ciAttr = mprop.GetCustomAttribute(typeof(ColIndexAttribute)) as ColIndexAttribute;
+                    //mprop.SetValue(instance, row.GetCell(ciAttr.Index));
+                }
+                else
+                {
+                    throw new Exception(string.Format("类型{0}属性{1}未定义ColIndex",model.Name,mprop.Name));
+                }
+            }
+            return instance;
         }
     }
 }

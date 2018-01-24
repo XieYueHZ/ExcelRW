@@ -16,6 +16,7 @@ namespace ExcelRW
     /// </summary>
     public class ExcelReader
     {
+        #region SheetToDataTable
         /// <summary>
         /// 将Isheet读入DataTable
         /// </summary>
@@ -79,6 +80,8 @@ namespace ExcelRW
                 dt.Columns.Add(colName);
             }
         }
+        #endregion
+        #region 辅助方法1
         /// <summary>
         /// 将Excel单元格转换为String
         /// </summary>
@@ -164,6 +167,8 @@ namespace ExcelRW
 
             return isDate;
         }
+        #endregion
+        #region SheetToList 委托实现
         /// <summary>
         /// 将Sheet转换为List
         /// 在T中定义T CreateFromRow(IRow)
@@ -199,6 +204,8 @@ namespace ExcelRW
             }
             return list;
         }
+        #endregion
+        #region RowToModel 反射
         /// <summary>
         /// 将Row实例化为T
         /// </summary>
@@ -229,7 +236,7 @@ namespace ExcelRW
             }
             else
             {
-                return null;
+                return default(T);
             }
            
         }
@@ -270,6 +277,7 @@ namespace ExcelRW
                     return null;
             }
         }
+        #endregion
 
     }
 }

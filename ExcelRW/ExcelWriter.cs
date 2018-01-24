@@ -16,6 +16,7 @@ namespace ExcelRW
     /// </summary>
     class ExcelWriter
     {
+        #region DataTableToSheet
         /// <summary>
         /// 将DataTable转化为Isheet
         /// </summary>
@@ -74,7 +75,8 @@ namespace ExcelRW
                 }
             }
         }
-
+        #endregion
+        #region ListToSheet 使用委托
         /// <summary>
         /// 将List转换为ISheet
         /// 在T中定义 IRow GetTitle(),IRow CreateRow(T)
@@ -99,7 +101,6 @@ namespace ExcelRW
                 r = CreateRow(item);
             }
         }
-        #region ListToSheet
         /// <summary>
         /// ListToSheet,在指定行号开始将List导入Sheet
         /// </summary>
@@ -156,8 +157,7 @@ namespace ExcelRW
             startNum += 1;
             ListAppendToSheet(list, sheet, CreateRow);
         }
-        #endregion
-        #region 另一种委托写法,需要测试
+        //另一种委托写法,需要测试
         public static void ListToSheet<T>(List<T> list,ISheet sheet,ModelToRow<T> MtoRow)
         {
             int startNum = 0;
@@ -170,7 +170,7 @@ namespace ExcelRW
             }
         }
         #endregion
-
+        #region ModelToRow
         public static void ModelToRow<T>(T model,IRow row)
         {
             Type t = typeof(T);
@@ -202,5 +202,6 @@ namespace ExcelRW
                 }      
             }
         }
+        #endregion
     }
 }

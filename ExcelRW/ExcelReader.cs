@@ -199,27 +199,77 @@ namespace ExcelRW
             }
             return list;
         }
-
+        /// <summary>
+        /// 将Row实例化为T
+        /// </summary>
+        /// <typeparam name="T">需要实例化的类</typeparam>
+        /// <param name="row"></param>
+        /// <returns></returns>
         public static T RowToModel<T>(IRow row)
         {
-            Type model = typeof(T);
-            T instance = (T)Activator.CreateInstance(model);
-            foreach (var mprop in model.GetProperties())
+            if (row!=null)
             {
-                if (mprop.IsDefined(typeof(ColIndexAttribute)))
+                Type model = typeof(T);
+                T instance = (T)Activator.CreateInstance(model);
+                foreach (var mprop in model.GetProperties())
                 {
-                    //ColIndexAttribute ciAttr = mprop.GetCustomAttribute(typeof(ColIndexAttribute)) as ColIndexAttribute;
-                    //mprop.SetValue(instance, row.GetCell(ciAttr.Index));
+                    if (mprop.IsDefined(typeof(ColIndexAttribute)))
+                    {
+                        ColIndexAttribute ciAttr = mprop.GetCustomAttribute(typeof(ColIndexAttribute)) as ColIndexAttribute;
+                        ICell cell = row.GetCell(ciAttr.Index);
+                        mprop.SetValue(instance, ConvertCell(cell, mprop.PropertyType));
+                        //mprop.SetValue(instance, row.GetCell(ciAttr.Index));
+                    }
+                    else
+                    {
+                        throw new Exception(string.Format("类型{0}属性{1}未定义ColIndex", model.Name, mprop.Name));
+                    }
                 }
-                else
-                {
-                    throw new Exception(string.Format("类型{0}属性{1}未定义ColIndex",model.Name,mprop.Name));
-                }
+                return instance;
             }
-            return instance;
+            else
+            {
+                return null;
+            }
+           
         }
-
-        
+        /// <summary>
+        /// 将单元格的值转换为类型t
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        private static object ConvertCell(ICell cell,Type t)
+        {
+            switch (cell.CellType)
+            {
+                case CellType.Unknown:
+                    return null;
+                case CellType.Numeric:
+                    if (DateUtil.IsCellDateFormatted(cell))
+                    {
+                        return Convert.ChangeType(cell.DateCellValue, t);
+                    }
+                    else
+                    {
+                        return Convert.ChangeType(cell.NumericCellValue,t);
+                    }
+                case CellType.String:
+                    return Convert.ChangeType(cell.StringCellValue, t);
+                case CellType.Formula:
+                    IFormulaEvaluator e = WorkbookFactory.CreateFormulaEvaluator(cell.Sheet.Workbook);
+                    ICell formulaCell = e.EvaluateInCell(cell);
+                    return ConvertCell(formulaCell, t);
+                case CellType.Blank:
+                    return null;
+                case CellType.Boolean:
+                    return Convert.ChangeType(cell.BooleanCellValue, t);
+                case CellType.Error:
+                    return null;
+                default:
+                    return null;
+            }
+        }
 
     }
 }

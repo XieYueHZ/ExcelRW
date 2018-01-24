@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NPOI.SS.UserModel;
 using System.Data;
+using System.Reflection;
 
 namespace ExcelRW
 {
@@ -169,5 +170,37 @@ namespace ExcelRW
             }
         }
         #endregion
+
+        public static void ModelToRow<T>(T model,IRow row)
+        {
+            Type t = typeof(T);
+            foreach (var item in t.GetProperties())
+            {
+                if (item.IsDefined(typeof(ColIndexAttribute))&&item.IsDefined(typeof(ColTypeAttribute)))
+                {
+                    ColIndexAttribute ciAttr = item.GetCustomAttribute<ColIndexAttribute>();
+                    ICell cell = row.CreateCell(ciAttr.Index);
+
+                    ColTypeAttribute ctAttr = item.GetCustomAttribute<ColTypeAttribute>();
+                    switch (ctAttr.ColType)
+                    {
+                        case ColType.T_STR:
+                            cell.SetCellValue((string)item.GetValue(model));
+                            break;
+                        case ColType.T_BOOL:
+                            cell.SetCellValue((bool)item.GetValue(model));
+                            break;
+                        case ColType.T_DATE:
+                            cell.SetCellValue((DateTime)item.GetValue(model));
+                            break;
+                        case ColType.T_NUM:
+                            cell.SetCellValue((double)item.GetValue(model));
+                            break;
+                        default:
+                            break;
+                    }
+                }      
+            }
+        }
     }
 }

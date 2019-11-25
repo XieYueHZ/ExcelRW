@@ -8,7 +8,7 @@ using NPOI.SS.UserModel;
 namespace ExcelRW
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    class ColIndexAttribute : Attribute
+    public class ColIndexAttribute : Attribute
     {
         public int Index { get; }
         public ColIndexAttribute(int index)
@@ -17,7 +17,7 @@ namespace ExcelRW
         }
     }
     [AttributeUsage(AttributeTargets.Property,AllowMultiple =false,Inherited =true)]
-    class ColTypeAttribute:Attribute
+    public class ColTypeAttribute:Attribute
     {
         public ColType ColType { get; }
         public ColTypeAttribute(ColType ct)
@@ -25,7 +25,7 @@ namespace ExcelRW
             this.ColType = ct;
         }
     }
-    enum ColType
+    public enum ColType
     {
         T_STR,
         T_BOOL,

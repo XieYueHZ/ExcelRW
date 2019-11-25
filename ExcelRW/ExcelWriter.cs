@@ -10,11 +10,11 @@ using System.Reflection;
 namespace ExcelRW
 {
     //另一种委托写法
-    delegate IRow ModelToRow<T>(T t);
+    public delegate IRow ModelToRow<T>(T t);
     /// <summary>
     /// NPOI写入Excel辅助类
     /// </summary>
-    class ExcelWriter
+    public class ExcelWriter
     {
         #region DataTableToSheet
         /// <summary>
@@ -158,16 +158,36 @@ namespace ExcelRW
             ListAppendToSheet(list, sheet, CreateRow);
         }
         //另一种委托写法,需要测试
-        public static void ListToSheet<T>(List<T> list,ISheet sheet,ModelToRow<T> MtoRow)
+        public static void ListToSheet<T>(ISheet sheet, List<T> list,  ModelToRow<T> MtoRow)
         {
             int startNum = 0;
             foreach (var item in list)
             {
                 IRow r = sheet.CreateRow(startNum);
-                
+
                 r = MtoRow(item);
                 startNum += 1;
             }
+        }
+        #endregion
+        #region ListToSheet 使用反射将对象转化为IRow
+        /// <summary>
+        /// ListToSheet
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="sheet"></param>
+        /// <param name="startRowNum"></param>
+        public static void ListToSheet<T>(List<T> list,ISheet sheet,int startRowNum)
+        {
+            foreach (var item in list)
+            {
+                IRow r = sheet.CreateRow(startRowNum);
+                ModelToRow(item, r);
+                Console.WriteLine(r.GetCell(1).StringCellValue);
+                startRowNum += 1;
+            }
+
         }
         #endregion
         #region ModelToRow
@@ -185,16 +205,20 @@ namespace ExcelRW
                     switch (ctAttr.ColType)
                     {
                         case ColType.T_STR:
+                            cell.SetCellType(CellType.String);
                             cell.SetCellValue((string)item.GetValue(model));
                             break;
                         case ColType.T_BOOL:
+                            cell.SetCellType(CellType.Boolean);
                             cell.SetCellValue((bool)item.GetValue(model));
                             break;
                         case ColType.T_DATE:
+                            cell.SetCellType(CellType.String);
                             cell.SetCellValue((DateTime)item.GetValue(model));
                             break;
                         case ColType.T_NUM:
-                            cell.SetCellValue((double)item.GetValue(model));
+                            cell.SetCellType(CellType.Numeric);
+                            cell.SetCellValue(Convert.ToDouble(item.GetValue(model)));
                             break;
                         default:
                             break;

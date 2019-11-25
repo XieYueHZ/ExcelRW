@@ -25,6 +25,15 @@ namespace ExcelRW
             this.ColType = ct;
         }
     }
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+    public class ColNameAttribute : Attribute
+    {
+        public string ColName { get; }
+        public ColNameAttribute(string name)
+        {
+            this.ColName = name;
+        }
+    }
     public enum ColType
     {
         T_STR,
